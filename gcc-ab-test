@@ -1,6 +1,8 @@
+#using csv instead of RsiteCatalyst package as experience cloud id is not available
+
 setwd("C:/Users/crgarcia/Desktop/GCCAbTest")
-visits <- read_csv("gccVisits.csv")
-launches <- read_csv("gccLaunches.csv")
+visits <- read_csv("gccVisits.csv") #Date, MKVisitorID, GCCControl, GCCVariant, AllVisits
+launches <- read_csv("gccLaunches.csv") #Date, MKVisitorID, GCCControl, GCCVariant, GamesLaunched
 
 #merge visits and launches
 colnames(visits)
