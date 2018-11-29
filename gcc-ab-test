@@ -1,0 +1,46 @@
+setwd("C:/Users/crgarcia/Desktop/GCCAbTest")
+visits <- read_csv("gccVisits.csv")
+launches <- read_csv("gccLaunches.csv")
+
+#merge visits and launches
+colnames(visits)
+dataMerge <- left_join(visits, launches, by= c("Date", "Marketing Cloud Visitor ID", "GCC AB test - Control", "GCC AB test - Variant"))
+
+#prettyfying
+colnames(dataMerge) <- c("date", "mid", "control", "variant", "visits", "gamesLaunched")
+dataMerge$date <- as.Date(dataMerge$date, format = "%B %d, %Y")
+
+#add column for conversion and remove 0s
+dataMerge[is.na(dataMerge)] <- 0
+dataMerge$conversion <- dataMerge$gamesLaunched
+dataMerge$conversion[dataMerge$conversion>0] <- 1
+
+
+#data sets for control and variant
+control <- dataMerge %>% 
+  filter(control == 1)
+
+variant <- dataMerge %>% 
+  filter(variant == 1)
+
+#average values:
+mean(control$gamesLaunched)
+mean(variant$gamesLaunched)
+
+mean(control$conversion)
+mean(variant$conversion)
+
+
+#data for key KPI export
+controlChart <- control
+control$group <- "Control"
+controlChart <- controlChart[,c(6,8)]
+
+variantChart <- variant
+variant$group <- "Variant"
+variantChart <- variantChart[,c(6,8)]
+
+#and combine into your new data frame 
+bothGroups <- rbind(controlChart, variantChart)
+write_csv(bothGroups, "bothGroups.csv")
+
